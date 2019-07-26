@@ -1,0 +1,76 @@
+@import url(http://fonts.googleapis.com/css?family=Sanchez);
+
+* {
+  box-sizing: border-box;
+  font-family: "Verdana";
+}
+
+html {
+  background: url(./images/background.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+  color: white;
+}
+
+.wrapper {
+  width: 800px;
+  margin: 5% auto;
+}
+
+#results {
+  width: 800px;
+  margin: 5% auto;
+  background: #159957;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #155799, #159957);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #155799, #159957); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  border-radius: 25px;
+  padding: 1.9em;
+}
+
+.form-area {
+  background: #43C6AC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #191654, #43C6AC);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #191654, #43C6AC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  border-radius: 25px;
+  padding: 1.9em;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.grid-item {
+  padding: 20px;
+  font-size: 30px;
+}
+
+.images {
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.fsSubmit {
+  background: #1C8DA2; /* Old browsers */
+  margin: 0 auto; clear: both;
+  font-size: 14px;
+  color: white;
+  border:1px solid rgba(121, 145, 115, 0.25);
+  border-radius: 12px;
+  font-family: 'Sanchez', serif;
+  text-shadow:1px 1px 1px rgba(102, 102, 102, 0.7);
+  padding: 10px 10px;
+}
+  
+.fsSubmit:hover {
+  cursor:pointer;
+  background-color: #004b81;
+  -moz-transition: background-color 0.5s, box-shadow 0.5s;
+  -webkit-transition: background-color 0.5s, box-shadow 0.5s;
+  transition: background-color 0.5s, box-shadow 0.5s;
+}

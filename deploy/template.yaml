@@ -1,0 +1,379 @@
+Description: Template to create VPC and EC2 resources
+
+Parameters:
+
+  VPCName:       { Type: "String", Default: "VPC-2-AZs"     , Description: "VPC name. Default: VPC-2-AZs" }
+  CIDRVpc:       { Type: "String", Default: "10.100.0.0/16" , Description: "VPC CIDR"                  , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
+
+  CIDRPublicA:   { Type: "String", Default: "10.100.11.0/24", Description: "VPC CIDR Subnet Public-A"  , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
+  CIDRPrivateA:  { Type: "String", Default: "10.100.12.0/24", Description: "VPC CIDR Subnet Private-A" , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
+
+  CIDRPublicB:   { Type: "String", Default: "10.100.21.0/24", Description: "VPC CIDR Subnet Public-B"  , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
+  CIDRPrivateB:  { Type: "String", Default: "10.100.22.0/24", Description: "VPC CIDR Subnet Private-B" , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
+
+  SSHLocation:   { Type: "String", Default: "0.0.0.0/0"  , Description: "SSH source. Default:0.0.0.0/0", AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
+  SSHKp:         { Type: "String", Default: "cicd-keypair", Description: "KP to do SSH" }
+
+Mappings:
+
+    "VPCRange": {
+      "VPC"       : { "CIDR": "10.100.0.0/16"  },
+
+      "PublicA"   : { "CIDR": "10.100.11.0/24" },
+      "PrivateA"  : { "CIDR": "10.100.12.0/24" },
+
+      "PublicB"   : { "CIDR": "10.100.21.0/24" },
+      "PrivateB"  : { "CIDR": "10.100.22.0/24" }
+    }
+
+    "RegionAndResource": {
+      "us-east-1"          : { "image": "ami-0b898040803850657" }
+    }
+
+Resources:
+  
+  ###
+  ### VPC General
+  ###
+
+  # VPC
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CIDRVpc
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - { Key: Name , Value: !Ref VPCName }
+  
+  # IGW
+  IGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - { Key: Name, Value: { "Fn::Join":["",[ "IGW-",{"Ref":"VPCName" } ]] } }
+        - { Key: VPC , Value: !Ref VPCName       }
+
+  # Attach IGW to VPC
+  IGWAttach:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: { VpcId: !Ref VPC, InternetGatewayId: !Ref IGW }
+
+  # Public Routing A
+  RouteTablePubA:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - { Key: Name, Value: Route-Table-Public-A  }
+        - { Key: VPC , Value: !Ref VPCName        }
+
+  RouteIGWA:
+    Type: AWS::EC2::Route
+    DependsOn: IGW
+    Properties:
+      RouteTableId: !Ref RouteTablePubA
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref IGW
+
+  # Public Routing B
+  RouteTablePubB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - { Key: Name, Value: Route-Table-Public-B  }
+        - { Key: VPC , Value: !Ref VPCName        }
+
+  RouteIGWB:
+    Type: AWS::EC2::Route
+    DependsOn: IGW
+    Properties:
+      RouteTableId: !Ref RouteTablePubB
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref IGW
+
+  # Subnet: Public-A
+  SubnetPubA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref CIDRPublicA
+      AvailabilityZone: { "Fn::Select" : [ "0", { "Fn::GetAZs" : "" } ] }
+      MapPublicIpOnLaunch: True
+      Tags:
+        - { Key: Name, Value: PubSubnet-A  }
+        - { Key: VPC , Value: !Ref VPCName }
+
+  # Attach to: Route-Table-Public A
+  RouteTableAssociationPubA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref SubnetPubA, RouteTableId: !Ref RouteTablePubA }
+
+  # Public IP for NATA
+  EIPNATA:
+    Type: AWS::EC2::EIP
+    Properties: 
+      Domain: vpc
+
+  # Attach NATA to Public-A
+  NATA:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: !GetAtt EIPNATA.AllocationId
+      SubnetId: !Ref SubnetPubA
+      Tags: 
+        - { Key: Name, Value: Nat-Gateway-A }
+
+  # Subnet: Public-B
+  SubnetPubB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref CIDRPublicB
+      AvailabilityZone: { "Fn::Select" : [ "1", { "Fn::GetAZs" : "" } ] }
+      MapPublicIpOnLaunch: True
+      Tags:
+        - { Key: Name, Value: PubSubnet-B  }
+        - { Key: VPC , Value: !Ref VPCName }
+
+  # Attach to: Route-Table-Public B
+  RouteTableAssociationPubB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref SubnetPubB, RouteTableId: !Ref RouteTablePubB }
+
+  # Public IP for NATB
+  EIPNATB:
+    Type: AWS::EC2::EIP
+    Properties: 
+      Domain: vpc
+
+  # Attach NATB to Public-B
+  NATB:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: !GetAtt EIPNATB.AllocationId
+      SubnetId: !Ref SubnetPubB
+      Tags:
+        - { Key: Name, Value: Nat-Gateway-B }
+
+  # Private Routing A
+  RouteTablePrivA:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - { Key: Name, Value: Route-Table-Priv-A }
+        - { Key: VPC , Value: !Ref VPCName       }
+
+  # Subnet: Private-A
+  SubnetPrivA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref CIDRPrivateA
+      AvailabilityZone: { "Fn::Select" : [ "0", { "Fn::GetAZs" : "" } ] }
+      Tags:
+        - { Key: Name, Value: PrivSubnet-A  }
+        - { Key: VPC , Value: !Ref VPCName }
+
+  # Attach to: Route-Table-Private A
+  RouteTableAssociationPrivA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref SubnetPrivA, RouteTableId: !Ref RouteTablePrivA }
+
+  # Internet Access A
+  RouteNATA:
+    Type: AWS::EC2::Route
+    DependsOn: NATA
+    Properties:
+      RouteTableId: !Ref RouteTablePrivA
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATA
+
+  # Private Routing B
+  RouteTablePrivB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - { Key: Name, Value: Route-Table-Priv-B }
+        - { Key: VPC , Value: !Ref VPCName       }
+
+  # Subnet: Private-B
+  SubnetPrivB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref CIDRPrivateB
+      AvailabilityZone: { "Fn::Select" : [ "1", { "Fn::GetAZs" : "" } ] }
+      Tags:
+        - { Key: Name, Value: PrivSubnet-B  }
+        - { Key: VPC , Value: !Ref VPCName }
+
+  # Attach to: Route-Table-Private B
+  RouteTableAssociationPrivB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref SubnetPrivB, RouteTableId: !Ref RouteTablePrivB }
+
+  # Internet Access B
+  RouteNATB:
+    Type: AWS::EC2::Route
+    DependsOn: NATB
+    Properties:
+      RouteTableId: !Ref RouteTablePrivB
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATB
+
+  ###
+  ### Instances
+  ###
+
+  # Security Group for SSH
+  SecurityGroupSSH:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SSHSg
+      GroupDescription: ssh
+      SecurityGroupIngress:
+        -
+          IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: SSHSg
+
+  # Security Group for HTTP(S) ALB
+  SecurityGroupHTTPALB:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: HTTPSgALB
+      GroupDescription: HTTP(S)
+      SecurityGroupIngress:
+        -
+          IpProtocol: "tcp"
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: "0.0.0.0/0"
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: HTTPSgALB
+
+  # Security Group for HTTP(S)
+  SecurityGroupHTTPEC2:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn:
+      - SecurityGroupHTTPALB
+    Properties:
+      GroupName: HTTPSgEC2
+      GroupDescription: HTTP(S)
+      SecurityGroupIngress:
+        -
+          IpProtocol: "tcp"
+          FromPort: "80"
+          ToPort: "80"
+          SourceSecurityGroupId: !Ref SecurityGroupHTTPALB
+        -
+          IpProtocol: "tcp"
+          FromPort: "443"
+          ToPort: "443"
+          SourceSecurityGroupId: !Ref SecurityGroupHTTPALB
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: HTTPSgEC2
+
+  # Instance-A
+  EC2A:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !FindInMap [RegionAndResource, !Ref "AWS::Region", image]
+      InstanceType: t2.micro
+      SubnetId: !Ref SubnetPrivA
+      SecurityGroupIds:
+        - !Ref SecurityGroupHTTPEC2
+        - !Ref SecurityGroupSSH
+      KeyName: !Ref SSHKp
+      Tags:
+        - Key: Name
+          Value: cicd-techtalk
+  
+  # Instance-Bastion
+  EC2Bastion:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !FindInMap [RegionAndResource, !Ref "AWS::Region", image]
+      InstanceType: t2.micro
+      SubnetId: !Ref SubnetPubA
+      SecurityGroupIds:
+        - !Ref SecurityGroupSSH
+      KeyName: !Ref SSHKp
+      Tags:
+        - Key: Name
+          Value: BastionInstance
+  
+  EIPBastion:
+    Type: AWS::EC2::EIP
+    DependsOn: 
+      - EC2Bastion
+    Properties:
+      Domain: !Ref VPC
+      InstanceId: !Ref EC2Bastion
+
+  # Target Group
+  TALB:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn:
+      - EC2A
+    Properties:
+      Name: cicd-techtalk-tg
+      VpcId: !Ref VPC
+      TargetType: instance
+      Port: 80
+      Protocol: HTTP
+      Targets:
+        - Id: !Ref EC2A
+
+  # Elastic Load Balancer
+  ALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn:
+      - TALB
+    Properties:
+      Subnets: 
+        - !Ref SubnetPubA
+        - !Ref SubnetPubB
+      Name: cicd-techtalk-alb
+      SecurityGroups:
+        - !Ref SecurityGroupHTTPALB
+  
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+      Properties: 
+        DefaultActions: 
+          -
+            TargetGroupArn: !Ref TALB
+            Type: forward
+        LoadBalancerArn: !Ref ALB
+        Port: 80
+        Protocol: HTTP
+
+  # Parameter Store
+  ConfParameter:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Name: /cicd-techtalk/aws/region
+      Type: String
+      Value: us-east-1
+  
+Outputs:
+
+  VPC:           { Description: "VPC id"    , Value: { "Ref": "VPC"           } , Export: { Name: { "Fn::Sub": "${AWS::StackName}-VPC"           } } }
+
+  EIPBastion:    { Description: "Public IP" , Value: { "Ref": "EIPBastion"       } , Export: { Name: { "Fn::Sub": "${AWS::StackName}-EIPBastion"       } } }
+
+  ELB:    { Description: "ELB DNS" , Value: { "Ref": "ALB"       } , Export: { Name: { "Fn::Sub": "${AWS::StackName}-ALBDNS"       } } }

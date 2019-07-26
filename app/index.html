@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Celebrity Recognition</title>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <script>
+        function showImg() {
+            let file = document.getElementById('upload').files[0];
+            let reader = new FileReader();
+            let image = document.getElementById('imgCelebrity');
+
+            reader.onload = function (e) {
+                image.src = e.target.result;
+            }
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="form-area">
+            <h2>Celebrity Recognition</h2>
+
+            <div class="grid-container">
+
+                <!--UPLOAD & RECOGNIZE CELEBRITY ON IMAGE-->
+                <div class="grid-item">
+                    <form enctype="multipart/form-data" method="POST" action="/celebrity">
+                        <p>
+                            <input type="file" id='upload' class="fsSubmit" name='upload' value='Upload image'
+                                onchange="showImg()" />
+                        </p>
+                        <p>
+                            <input type="submit" id='img' class="fsSubmit" name='img' value='Find celebrity!' />
+                        </p>
+                    </form>
+                </div>
+
+                <!--PRINT IMAGE-->
+                <div class="grid-item">
+                    <img src="./css/images/none.jpg" id="imgCelebrity" class="images" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

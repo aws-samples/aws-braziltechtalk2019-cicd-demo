@@ -1,0 +1,15 @@
+version: 0.2
+env:
+  parameter-store:
+    AWS_REGION: /cicd-techtalk/aws/region
+
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo "{\"region\":\"$AWS_REGION\"}" > app/config.json
+      
+artifacts:
+  files:
+    - 'app/**/*'
+  name: cicd-techtalk-$(date +%Y-%m-%d-%H-%m-%S)
