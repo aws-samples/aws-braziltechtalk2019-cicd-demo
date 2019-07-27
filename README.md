@@ -42,14 +42,14 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 3. Enter the Project name as **'cicd-techtalk'**
 4. On Source define **AWS CodeCommit** as the source provider and select **cicd-techtalk** for repository
 5. On Environment choose **Ubuntu** for Operational System, **Standard** for Runtime and **aws/codebuild/standard:2.0** as the Image version
-6. Click on **Create build** project
+6. Click on **Create build project** button
 
 
 ## CodeDeploy
 1. Open the CodeDeploy console at https://console.aws.amazon.com/codedeploy
 2. Click on **Create application** button
 3. Enter the Application name as **'cicd-techtalk'**, select **EC2/On-premises** for Compute platform and then click on **Create** button
-4. Once your application is created, under Deployment groups tab click on **Create deployment group** button
+4. Once your application was created, under Deployment groups tab click on **Create deployment group** button
 5. Enter the deployment group name as **'cicd-techtalk'**
 6. Select the Service Role as **CodeDeploy-cicd-techtalk**
 7. On Environment configuration select **Amazon EC2 instances**, enter for Key **'Name'** and for Value **'cicd-techtalk'**
@@ -62,9 +62,9 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 2. Click on **Create pipeline** button
 3. On the Step 1 - Choose pipeline setting: Enter the Pipeline name as **'cicd-techtalk'**
 3. On the Step 2 - Add source stage:
-- Select **AWS CodeCommit** for Source provider
-- Select **cicd-techtalk** for Repository name
-- Select **master** for Branch name
+3.1 Select **AWS CodeCommit** for Source provider
+3.2 Select **cicd-techtalk** for Repository name
+3.3 Select **master** for Branch name
 4. On the Step 3 - Add build stage: Select **AWS Codebuild** for Build provider, and **'cicd-techtalk'** for Project name
 5. On the Step 4 - Add deploy stage: Select **AWS CodeDeploy** for Deploy provider, **cicd-techtalk** for Application and Deployment group
 6. On the Step 5 - Review: Click on **Create pipeline** button
