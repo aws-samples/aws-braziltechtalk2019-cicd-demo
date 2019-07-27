@@ -36,6 +36,29 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 2. Click on **Create repository** button, enter the Repostiory name as **'cicd-techtalk'** and then click on **Create** button
 
 
+## Grant access for CodeCommit on IAM
+1. Open the IAM console at https://console.aws.amazon.com/iam
+2. In the navigation pane select **Users**, and then click on **awsstudent** username
+3. Under Security Credentials tab, click on **Generate** button of section HTTPS Git credentials for AWS CodeCommit
+4. Click on **Download credentials** button and save the generated csv file
+  
+
+## Setup Cloud9 environment
+1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
+2. On the Step 1 - Name environment: Enter the Environment name as **'cicdtech-talk'**
+3. On the Step 2 - Configure settings: Just click on **Next** button
+4. On the Step 3 - Review: Check the resources being created, and click on **Create Environment** button 
+5. Once your envionment was provisioned, select the **bash** tab and execute the following commands:
+```
+echo '.c9/' > .gitignore
+git init
+git add .
+git commit -m "Repo Init"
+git remote add origin https://git-codecommit.us-east-1.amazonaws.com/v1/repos/cicd-techtalk
+git push -u origin master
+```
+
+
 ## CodeBuild
 1. Open the CodeBuild console at https://console.aws.amazon.com/codebuild
 2. Click on **Create build project** button
@@ -70,22 +93,22 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 6. On the Step 5 - Review: Click on **Create pipeline** button
 
 
-## Grant access for CodeCommit on IAM
-1. Open the IAM console at https://console.aws.amazon.com/iam;
-2. In the navigation pane select **Users**, and then click on **awsstudent** username
-3. Under Security Credentials tab, click on **Generate** button of section HTTPS Git credentials for AWS CodeCommit
-4. Click on **Download credentials** button and save the generated csv file
-  
-
-## Cloud9
-1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
-2. On the Step 1 - Name environment: Enter the Environment name as **'cicdtech-talk'**
-3. On the Step 2 - Configure settings: Just click on **Next** button
-4. On the Step 3 - Review: Check the resources being created, and click on **Create Environment** button 
-
+## Setup your Project and push it
+1. 1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
+2. Select the **bash** tab and execute the following commands:
+```
+wget https://github.com/aws-samples/aws-braziltechtalk2019-cicd-demo/zipball/master -O project.zip
+unzip -j project.zip
+rm project.zip
+git add .
+git commit -m 'project code'
+git push 
+```
 
 ## Clean up
- 
+1. Open the CloudFormation console at https://console.aws.amazon.com/cloudformation
+2. Select **cicd-techtalk** Stack and click on **Delete** button
+
 
 ## Reference links
 https://docs.aws.amazon.com/codebuild/latest/userguide/sample-codedeploy.html
