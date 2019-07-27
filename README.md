@@ -94,7 +94,7 @@ git push -u origin master
 
 
 ## Setup your Project and push it
-1. 1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
+1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
 2. Select the **bash** tab and execute the following commands:
 ```
 wget https://github.com/aws-samples/aws-braziltechtalk2019-cicd-demo/zipball/master -O project.zip
