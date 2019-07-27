@@ -13,7 +13,7 @@ To get started you will need a IAM user with the following access:
 - CodeDeploy
 - EC2  
 
-- Tested in the N. Virginia region (us-east-1).
+_Note: Tested in the N. Virginia region (us-east-1)._
 
 ## Key Pairs
 1. Open the EC2 console at https://console.aws.amazon.com/ec2
@@ -22,12 +22,12 @@ To get started you will need a IAM user with the following access:
 
 ## CloudFormation
 1. Open the CloudFormation console at https://console.aws.amazon.com/cloudformation
-2. On the Welcome page, choose Create stack
+2. On the Welcome page, click on **Create stack** button
 3. On the Step 1 - Specify template: Choose Upload a template file, click on **Choose file** button and select the **template.yaml** located inside deploy directory
 4. On the Step 2 - Specify stack details: Enter the Stack name as **'cicd-techtalk'**
 5. On the Step 3 - Configure stack options: Just click on **Next** button
-6. On the Step 4 - Review: Just check the resources being created, and then click on **Create Stack** button
-7. Wait for stack get into status **'CREATE_COMPLETE'**
+6. On the Step 4 - Review: Just check the resources that will be created, and click on **Create Stack** button
+7. Wait for the stack get into status **CREATE_COMPLETE**
 8. Under the Outputs tab, take a note of **ELB** value
   
 
@@ -38,7 +38,7 @@ To get started you will need a IAM user with the following access:
 
 ## CodeBuild
 1. Open the CodeBuild console at https://console.aws.amazon.com/codebuild
-2. Choose Create build project
+2. Click on **Create build project** button
 3. Enter the Project name as **'cicd-techtalk'**
 4. On Source define **AWS CodeCommit** as the source provider and select **cicd-techtalk** for repository
 5. On Environment choose **Ubuntu** for Operational System, **Standard** for Runtime and **aws/codebuild/standard:2.0** as the Image version
@@ -48,7 +48,7 @@ To get started you will need a IAM user with the following access:
 ## CodeDeploy
 1. Open the CodeDeploy console at https://console.aws.amazon.com/codedeploy
 2. Click on **Create application** button
-3. Enter the Application name as **'cicd-techtalk'**, select **EC2/On-premises** for Compute platform and then click on **'Create'** button
+3. Enter the Application name as **'cicd-techtalk'**, select **EC2/On-premises** for Compute platform and then click on **Create** button
 4. Once your application is created, under Deployment groups tab click on **Create deployment group** button
 5. Enter the deployment group name as **'cicd-techtalk'**
 6. Select the Service Role as **CodeDeploy-cicd-techtalk**
@@ -59,7 +59,7 @@ To get started you will need a IAM user with the following access:
 
 ## CodePipeline
 1. Open the CodePipeline console at https://console.aws.amazon.com/codepipeline
-2. Choose Create pipeline
+2. Click on **Create pipeline** button
 3. On the Step 1 - Choose pipeline setting: Enter the Pipeline name as **'cicd-techtalk'**
 3. On the Step 2 - Add source stage:
 - Select **AWS CodeCommit** for Source provider
@@ -67,7 +67,7 @@ To get started you will need a IAM user with the following access:
 - Select **master** for Branch name
 4. On the Step 3 - Add build stage: Select **AWS Codebuild** for Build provider, and **'cicd-techtalk'** for Project name
 5. On the Step 4 - Add deploy stage: Select **AWS CodeDeploy** for Deploy provider, **cicd-techtalk** for Application and Deployment group
-6. On the Step 5 - Review: Choose Create pipeline
+6. On the Step 5 - Review: Click on **Create pipeline** button
 
 
 ## Grant access for CodeCommit on IAM
