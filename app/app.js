@@ -1,5 +1,5 @@
 const configFile = "./config/config.json";
-const port = 8082
+const port = 80
 const http = require("http");
 const fs = require('fs');
 const path = require('path');
@@ -7,7 +7,7 @@ const AWS = require('aws-sdk');
 const formidable = require('formidable');
 var error;
 
-// Web Server listening on port 80
+// creat Webserver
 http.createServer(function (request, response) {
 
    // Find celebrity

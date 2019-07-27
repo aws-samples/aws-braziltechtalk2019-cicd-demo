@@ -4,12 +4,18 @@ env:
     AWS_REGION: /cicd-techtalk/aws/region
 
 phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+
   build:
     commands:
       - echo Build started on `date`
-      - echo "{\"region\":\"$AWS_REGION\"}" > app/config.json
-      
+      - echo "{\"region\":\"$AWS_REGION\"}" > app/config/config.json
+
 artifacts:
   files:
     - 'app/**/*'
+    - 'scripts/**'
+    - appspec.yml
   name: cicd-techtalk-$(date +%Y-%m-%d-%H-%m-%S)

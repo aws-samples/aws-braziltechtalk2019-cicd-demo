@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /app
+    destination: /opt/app
+hooks:
+  AfterInstall:
+    - location: /scripts/npm-install.sh
+      timeout: 120
+      runas: root
+  ApplicationStart:
+    - location: /scripts/app-start.sh
+      timeout: 30
+      runas: root
+  ApplicationStop:
+    - location: /scripts/app-stop.sh
+      timeout: 30
+      runas: root

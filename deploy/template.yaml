@@ -297,6 +297,19 @@ Resources:
       SecurityGroupIds:
         - !Ref SecurityGroupHTTPEC2
         - !Ref SecurityGroupSSH
+      UserData: 
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y aws-cfn-bootstrap
+          # CodeDeploy Agent Install
+          sudo yum install -y ruby
+          sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+          sudo chmod +x ./install
+          sudo ./install auto
+          # Node.JS Install
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+          . ~/.nvm/nvm.sh
+          nvm install 10.16.0 
       KeyName: !Ref SSHKp
       Tags:
         - Key: Name
@@ -335,6 +348,10 @@ Resources:
       TargetType: instance
       Port: 80
       Protocol: HTTP
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 2
+      HealthCheckIntervalSeconds: 5
       Targets:
         - Id: !Ref EC2A
 
@@ -353,14 +370,13 @@ Resources:
   
   ALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
-      Properties: 
-        DefaultActions: 
-          -
-            TargetGroupArn: !Ref TALB
-            Type: forward
-        LoadBalancerArn: !Ref ALB
-        Port: 80
-        Protocol: HTTP
+    Properties:
+      DefaultActions: 
+        - Type: forward
+          TargetGroupArn: !Ref TALB
+      LoadBalancerArn: !Ref ALB
+      Port: 80
+      Protocol: HTTP
 
   # Parameter Store
   ConfParameter:
