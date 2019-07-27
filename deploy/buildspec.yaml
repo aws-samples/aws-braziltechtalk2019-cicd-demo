@@ -14,11 +14,11 @@ phases:
       - echo "{\"region\":\"$AWS_REGION\"}" > app/config/config.json
 
 artifacts:
-  files:
-    - 'app/**/*'
-    - 'scripts/**'
-  name: cicd-techtalk-$(date +%Y-%m-%d-%H-%m-%S)
   secondary-artifacts:
+    project:
+      files:
+        - 'app/**/*'
+        - 'scripts/**'
     appspec:
       files:
         - deploy/appspec.yml
