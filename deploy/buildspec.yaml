@@ -22,5 +22,4 @@ artifacts:
     appspec:
       files:
         - deploy/appspec.yml
-      name: appspec
       discard-paths: yes
