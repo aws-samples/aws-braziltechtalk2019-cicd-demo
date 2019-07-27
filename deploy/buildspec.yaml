@@ -24,4 +24,3 @@ artifacts:
         - deploy/appspec.yml
       name: appspec
       discard-paths: yes
-      base-directory: location
