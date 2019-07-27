@@ -17,5 +17,11 @@ artifacts:
   files:
     - 'app/**/*'
     - 'scripts/**'
-    - deploy/appspec.yml
   name: cicd-techtalk-$(date +%Y-%m-%d-%H-%m-%S)
+  secondary-artifacts:
+    appspec:
+      files:
+        - deploy/appspec.yml
+      name: appspec
+      discard-paths: yes
+      base-directory: location
