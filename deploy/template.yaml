@@ -287,12 +287,42 @@ Resources:
         - Key: Name
           Value: HTTPSgEC2
 
+  # EC2 CodeDeploy role
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonRekognitionReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      RoleName: EC2-cicd-techtalk
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+
+  # Instance Profile
+  EC2InstanceProfile: 
+    Type: "AWS::IAM::InstanceProfile"
+    Properties: 
+      Path: "/"
+      Roles: 
+        - !Ref EC2Role
+
   # Instance-A
   EC2A:
     Type: 'AWS::EC2::Instance'
+    DependsOn: EC2InstanceProfile
     Properties:
       ImageId: !FindInMap [RegionAndResource, !Ref "AWS::Region", image]
       InstanceType: t2.micro
+      IamInstanceProfile: !Ref EC2InstanceProfile
       SubnetId: !Ref SubnetPrivA
       SecurityGroupIds:
         - !Ref SecurityGroupHTTPEC2
@@ -385,11 +415,109 @@ Resources:
       Name: /cicd-techtalk/aws/region
       Type: String
       Value: us-east-1
+
+  # CodeBuild role
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "codebuild.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      RoleName: CodeBuild-cicd-techtalk
+      Policies:
+        - PolicyName: cicdCodeBuildAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 'logs:*'
+                - 'ec2:CreateNetworkInterface'
+                - 'ec2:DescribeNetworkInterfaces'
+                - 'ec2:DeleteNetworkInterface'
+                - 'ec2:DescribeSubnets'
+                - 'ec2:DescribeSecurityGroups'
+                - 'ec2:DescribeDhcpOptions'
+                - 'ec2:DescribeVpcs'
+                - 'ec2:CreateNetworkInterfacePermission'
+                - 's3:PutObject'
+                - 's3:GetObject'
+                - 's3:GetObjectVersion'
+                - 's3:GetBucketAcl'
+                - 's3:GetBucketLocation'
+                - 'codecommit:GitPull'
+                Effect: Allow
+                Resource: '*'
+
+  # ParameterStore policy
+  ParametersStoreReadonly: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyName: "CiCdParametersStoreReadonly"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Action:
+              - "ssm:DescribeParameters"
+              - "ssm:GetParameterHistory"
+              - "ssm:DescribeDocumentParameters"
+              - "ssm:GetParametersByPath"
+              - "ssm:GetParameters"
+              - "ssm:GetParameter"
+            Resource: "*"
+      Roles: 
+        - !Ref CodeBuildRole
+
+  # CodeDeploy role
+  CodeDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "codedeploy.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole
+      RoleName: CodeDeploy-cicd-techtalk
   
 Outputs:
 
-  VPC:           { Description: "VPC id"    , Value: { "Ref": "VPC"           } , Export: { Name: { "Fn::Sub": "${AWS::StackName}-VPC"           } } }
+  VPC:
+    Description: "VPC id"
+    Value: !Ref VPC
 
-  EIPBastion:    { Description: "Public IP" , Value: { "Ref": "EIPBastion"       } , Export: { Name: { "Fn::Sub": "${AWS::StackName}-EIPBastion"       } } }
+  EIPBastion:
+    Description: "Public IP"
+    Value: !Ref EIPBastion
 
-  ELB:    { Description: "ELB DNS" , Value: { "Ref": "ALB"       } , Export: { Name: { "Fn::Sub": "${AWS::StackName}-ALBDNS"       } } }
+  ELB:
+    Description: "ELB DNS"
+    Value: !GetAtt ALB.DNSName
+
+  EC2Role:
+    Description: "Role used for EC2"
+    Value: !Ref EC2Role
+
+  CodeBuildRole:
+    Description: "Role used for CodeBuild"
+    Value: !Ref CodeBuildRole
+
+  CodeDeployRole:
+    Description: "Role used for CodeDeploy"
+    Value: !Ref CodeDeployRole
