@@ -64,7 +64,7 @@ git push -u origin master
 2. Click on **Create build project** button
 3. Enter the Project name as **'cicd-techtalk'**
 4. On Source define **AWS CodeCommit** as the source provider and select **cicd-techtalk** for repository
-5. On Environment choose **Ubuntu** for Operational System, **Standard** for Runtime and **aws/codebuild/standard:2.0** as the Image version
+5. On Environment choose **Ubuntu** for Operational System, **Standard** for Runtime and **aws/codebuild/standard:2.0** as the Image version. After, select **Existing service role** and search for **CodeBuild-cicd-techtalk**
 6. Click on **Create build project** button
 
 
