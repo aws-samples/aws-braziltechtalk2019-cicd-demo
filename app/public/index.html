@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Celebrity Recognition</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/ajax.js"></script>
+    <script type="text/javascript" src="js/image.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="form-area">
+            <h2>Celebrity Recognition</h2>
+
+            <div class="grid-container">
+
+                <!--UPLOAD & RECOGNIZE CELEBRITY ON IMAGE-->
+                <div class="grid-item">
+                    <form enctype="multipart/form-data" method="POST" action="/celebrity" id="fileUploadForm">
+                        <p>
+                            <input type="file" id='upload' class="fsSubmit" name='upload' value='Upload image'
+                                onchange="showImage()" />
+                        </p>
+                        <p>
+                            <input type="submit" id="btnSubmit" class="fsSubmit" name='img' value='Find celebrity!' />
+                        </p>
+                    </form>
+                </div>
+
+                <!--PRINT IMAGE-->
+                <div class="grid-item">
+                    <img src="./images/none.jpg" id="imgCelebrity" class="images" />
+                </div>
+
+            </div>
+        </div>
+        <span id="result"></span>
+    </div>
+</body>
+
+</html>

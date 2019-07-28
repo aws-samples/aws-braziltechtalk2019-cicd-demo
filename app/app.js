@@ -1,76 +1,45 @@
 const configFile = "./config/config.json";
-const port = 80
+const port = 8080
 const http = require("http");
 const fs = require('fs');
 const path = require('path');
 const AWS = require('aws-sdk');
 const formidable = require('formidable');
+const express = require('express');
+const app = express()
 var error;
 
-// creat Webserver
-http.createServer(function (request, response) {
+app.use(express.static('public'));
 
-   // Find celebrity
-   if (request.url == '/celebrity' && request.method == 'POST') {
-      let form = new formidable.IncomingForm();
+app.post('/celebrity', function(request, response) {
+   let form = new formidable.IncomingForm();
 
-      form.parse(request, function (err, fields, files) {
-         getCelebrity(files.upload.path, celebrityHandler);
-      });
-
-         //return;
-   } else if (request.url.match("\.css$")) {
-      let cssPath = path.join(__dirname, request.url);
-      let fileStream = fs.createReadStream(cssPath, "UTF-8");
-      response.writeHead(200, { 'content-type': 'text/css' });
-      fileStream.pipe(response);
-
-   } else if (request.url.match("\.jpg$")) {
-      let imagePath = path.join(__dirname, request.url);
-      let fileStream = fs.createReadStream(imagePath);
-      response.writeHead(200, { 'content-type': 'image/jpg' });
-      fileStream.pipe(response);
-  
-   } else {
-      // Print main html
-      fs.readFile('./index.html', function (err, html) {
-         response.writeHead(200, { 'content-type': 'text/html' });
-         response.write(html);
-         response.end();
-      });
-   }
+   form.parse(request, function (err, fields, files) {
+      getCelebrity(files.upload.path, celebrityHandler);
+   });
 
    function celebrityHandler(err, result) {
       if(err) {
-         console.log("Error:");
          console.log(err);
-         fs.readFile('./index.html', function (err2, html) {
-            response.writeHead(200, { 'content-type': 'text/html' });
-            data = html + "<div id='results'> \
+         var content = `<div id="results"> \
             <h3>Erro:</h3> \
-            <p> "+ err +"</p> \
-            </div>";
-            response.write(data);
-            response.end();
-         });
-         return;
-      }
+            <p> ${err} </p> \
+            </div>`;
 
-      console.log("Celebrity:");
-      console.log(result);
-   
-      // Print html with celebrity data
-      fs.readFile('./index.html', function (err, html) {
-         response.writeHead(200, { 'content-type': 'text/html' });
-         data = html + "<div id='results'> \
-         <h3>Results:</h3> \
-         <p>Name: " + result.Name + "</p> \
-         <p>Confidence: " + result.Confidence + "</p> \
-         <p>Source: <a href='http://" + result.Url + "' target='_new'>"+ result.Url +"</a></p> \
-         </div>";
-         response.write(data);
-         response.end();
-      });
+         response.send(content);
+      } else {
+         console.log("Celebrity:");
+         console.log(result);
+         // Print celebrity data
+         var content = `<div id='results'> \
+            <h3>Results:</h3> \
+            <p>Name: ${result.Name} </p> \
+            <p>Confidence: ${result.Confidence} </p> \
+            <p>Source: <a href="http://${result.Url}" target="_new">${result.Url}</a></p> \
+            </div>`;
+
+         response.send(content);
+      }
    }
 
    // Get AWS region to call APIs
@@ -125,6 +94,6 @@ http.createServer(function (request, response) {
          return celebrityHandler(err, null);
       }   
    }   
-}).listen(port);
+});
 
-console.log("Server listening on port " + port);
+app.listen(port, () => console.log(`App listening on port ${port}!`));
