@@ -1,5 +1,5 @@
 const configFile = "./config/config.json";
-const port = 8080
+const port = 80
 const http = require("http");
 const fs = require('fs');
 const path = require('path');
