@@ -453,29 +453,10 @@ Resources:
                 - 's3:GetBucketAcl'
                 - 's3:GetBucketLocation'
                 - 'codecommit:GitPull'
+                - 'ssm:GetParameters'
+                - 'ssm:GetParameter'
                 Effect: Allow
                 Resource: '*'
-
-  # ParameterStore policy
-  ParametersStoreReadonly: 
-    Type: "AWS::IAM::Policy"
-    Properties: 
-      PolicyName: "CiCdParametersStoreReadonly"
-      PolicyDocument: 
-        Version: "2012-10-17"
-        Statement: 
-          - 
-            Effect: "Allow"
-            Action:
-              - "ssm:DescribeParameters"
-              - "ssm:GetParameterHistory"
-              - "ssm:DescribeDocumentParameters"
-              - "ssm:GetParametersByPath"
-              - "ssm:GetParameters"
-              - "ssm:GetParameter"
-            Resource: "*"
-      Roles: 
-        - !Ref CodeBuildRole
 
   # CodeDeploy role
   CodeDeployRole:

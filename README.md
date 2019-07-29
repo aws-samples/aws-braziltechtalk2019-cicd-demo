@@ -2,7 +2,6 @@
 
 The purpose of this demo is show how to use some AWS services for CI/CD. We have a Node.js application utilizing Amazon Rekognition API to identify celebrities and we are going to automatize the source, build and deploy process.
 
-_Note: There is an intentional error on app.js. You can see the error after you launch the application on the first time and click on the button **Find celebrity!**._
 
 ![demo](cicd.jpg)
 
@@ -52,7 +51,6 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 4. On the Step 3 - Review: Check the resources being created, and click on **Create Environment** button 
 5. Once your envionment was provisioned, select the **bash** tab and execute the following commands:
 ```
-echo '.c9/' > .gitignore
 git init
 git add .
 git commit -m "Repo Init"
@@ -108,6 +106,8 @@ git add .
 git commit -m 'project code'
 git push 
 ```
+
+_Note: There is an intentional error on app.js. You can see the error after you launch the application on the first time and click on the button **Find celebrity!**._
 
 ## Clean up
 1. Open the CloudFormation console at https://console.aws.amazon.com/cloudformation
