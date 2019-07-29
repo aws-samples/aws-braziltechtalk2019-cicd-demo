@@ -94,6 +94,8 @@ git push -u origin master
 5. On the Step 4 - Add deploy stage: Select **AWS CodeDeploy** for Deploy provider, **cicd-techtalk** for Application and Deployment group
 6. On the Step 5 - Review: Click on **Create pipeline** button
 
+_Note: The first execution will fail during the build phase, because the project code is not commited yet._
+
 
 ## Setup your Project and push it
 1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
