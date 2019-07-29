@@ -1,4 +1,4 @@
-const configFile = "./config/config.json";
+const configFile = "./config/configx.json";
 const port = 80
 const http = require("http");
 const fs = require('fs');

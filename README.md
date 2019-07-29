@@ -2,9 +2,11 @@
 
 The purpose of this demo is show how to use some AWS services for CI/CD. We have a Node.js application utilizing Amazon Rekognition API to identify celebrities and we are going to automatize the source, build and deploy process.
 
-![demo](./deploy/images/cicd.jpg)
+_Note: There is an intentional error on app.js. You can see the error after you launch the application on the first time and click on the button **Find celebrity!**._
 
-To get started you will need a IAM user with the following access:
+![demo](cicd.jpg)
+
+To get started you will need an IAM user with the following access:
 - CloudFormation
 - Cloud9
 - CodeCommit
