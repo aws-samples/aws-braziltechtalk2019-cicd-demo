@@ -1,4 +1,4 @@
-const configFile = "./config/configx.json";
+const configFile = "./config/<PLEASE-FIX-ME>.json";
 const port = 80
 const http = require("http");
 const fs = require('fs');
@@ -50,7 +50,7 @@ app.post('/celebrity', function(request, response) {
 
          return region;
       } catch(err) {
-         throw new Error("Error reading configuration file: "+ configFile);
+         throw new Error("Cannot find configuration file: "+ configFile);
       }
    }   
 
