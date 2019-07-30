@@ -2,9 +2,10 @@
 
 The purpose of this demo is show how to use some AWS services for CI/CD. We have a Node.js application utilizing Amazon Rekognition API to identify celebrities and we are going to automatize the source, build and deploy process.
 
-![demo](./deploy/images/cicd.jpg)
 
-To get started you will need a IAM user with the following access:
+![demo](cicd.jpg)
+
+To get started you will need an IAM user with the following access:
 - CloudFormation
 - Cloud9
 - CodeCommit
@@ -50,7 +51,6 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 4. On the Step 3 - Review: Check the resources being created, and click on **Create Environment** button 
 5. Once your envionment was provisioned, select the **bash** tab and execute the following commands:
 ```
-echo '.c9/' > .gitignore
 git init
 git add .
 git commit -m "Repo Init"
@@ -92,6 +92,8 @@ git push -u origin master
 5. On the Step 4 - Add deploy stage: Select **AWS CodeDeploy** for Deploy provider, **cicd-techtalk** for Application and Deployment group
 6. On the Step 5 - Review: Click on **Create pipeline** button
 
+_Note: The first execution will fail during the build phase, because the project code is not commited yet._
+
 
 ## Setup your Project and push it
 1. Open the Cloud9 console at https://console.aws.amazon.com/cloud9
@@ -104,6 +106,8 @@ git add .
 git commit -m 'project code'
 git push 
 ```
+
+_Note: There is an intentional error on app.js. You can see the error after you launch the application on the first time and click on the button **Find celebrity!**._
 
 ## Clean up
 1. Open the CloudFormation console at https://console.aws.amazon.com/cloudformation
