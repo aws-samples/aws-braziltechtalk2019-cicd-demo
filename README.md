@@ -115,7 +115,7 @@ _Note: There is an intentional error on app.js. You can see the error after you 
 ## Test and fix your application ##
 1. Access the application opening your browser at the **ELB DNS** obtained in the step **CoudFormation**
 2. Test it using a celebrity picture of your preference and you will receive and error because it cannot find the configuration file
-3. Fix the configuration file name Using Cloud9, by opening the file **app/app.js** and changing on the first line from **<PLEASE-FIX-ME\>** to **config**
+3. Fix the configuration file name Using Cloud9, by opening the file **app/app.js** and changing on the first line from **PLEASE-FIX-ME** to **config**
 4. Still on Cloud9, select the **bash** tab and execute the following commands to commit and push your new code:
 ```
 git add app/app.js
