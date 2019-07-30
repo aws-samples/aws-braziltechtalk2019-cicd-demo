@@ -382,6 +382,9 @@ Resources:
       UnhealthyThresholdCount: 2
       HealthCheckTimeoutSeconds: 2
       HealthCheckIntervalSeconds: 5
+      TargetGroupAttribute:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 10
       Targets:
         - Id: !Ref EC2A
 
