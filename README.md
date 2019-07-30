@@ -100,8 +100,10 @@ _Note: The first execution will fail during the build phase, because the project
 2. Select the **bash** tab and execute the following commands:
 ```
 wget https://github.com/aws-samples/aws-braziltechtalk2019-cicd-demo/zipball/master -O project.zip
-unzip -j project.zip
-rm project.zip
+unzip project.zip
+mv aws-samples-aws-braziltechtalk2019-cicd-demo-*/* .
+mv aws-samples-aws-braziltechtalk2019-cicd-demo-*/.gitignore .
+rm -fr aws-samples-aws-braziltechtalk2019-cicd-demo-* project.zip
 git add .
 git commit -m 'project code'
 git push 
