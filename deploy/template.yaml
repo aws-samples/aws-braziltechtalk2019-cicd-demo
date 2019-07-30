@@ -337,9 +337,8 @@ Resources:
           sudo chmod +x ./install
           sudo ./install auto
           # Node.JS Install
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-          . ~/.nvm/nvm.sh
-          nvm install 10.16.0 
+          sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
+          sudo yum install -y nodejs npm
       KeyName: !Ref SSHKp
       Tags:
         - Key: Name

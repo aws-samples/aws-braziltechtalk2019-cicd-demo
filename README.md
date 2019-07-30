@@ -27,7 +27,7 @@ _Note: Tested in the N. Virginia region (us-east-1)._
 3. On the Step 1 - Specify template: Choose Upload a template file, click on **Choose file** button and select the **template.yaml** located inside deploy directory
 4. On the Step 2 - Specify stack details: Enter the Stack name as **'cicd-techtalk'**
 5. On the Step 3 - Configure stack options: Just click on **Next** button
-6. On the Step 4 - Review: Just check the resources that will be created, and click on **Create Stack** button
+6. On the Step 4 - Review: Enable the checkbox **I acknowledge that AWS CloudFormation might create IAM resources with custom names.**, and click on **Create Stack** button
 7. Wait for the stack get into status **CREATE_COMPLETE**
 8. Under the Outputs tab, take a note of **ELB** value
   
@@ -58,6 +58,7 @@ git remote add origin https://git-codecommit.us-east-1.amazonaws.com/v1/repos/ci
 git push -u origin master
 ```
 
+_Note: Please note that you'll be asked for the credentials created in the step **Grant access for CodeCommit on IAM**_
 
 ## CodeBuild
 1. Open the CodeBuild console at https://console.aws.amazon.com/codebuild
