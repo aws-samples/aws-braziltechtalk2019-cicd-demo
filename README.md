@@ -113,22 +113,23 @@ git push
 _Note: There is an intentional error on app.js. You can see the error after you launch the application on the first time and click on the button **Find celebrity!**._
 
 ## Test and fix your application ##
-1. Access your application opening your browser at the ELB DNS retrieved from CoudFormation Outputs
+1. Access the application opening your browser at the **ELB DNS** obtained in the step **CoudFormation**
 2. Test it using a celebrity picture of your preference and you will receive and error because it cannot find the configuration file
-3. Using Cloud9 open the file **app/app.js** and fix the configuration file name on the first modifying it from **<PLEASE-FIX-ME>** to **config**
-4. Still on Cloud9, select the **bash** tab and execute the following commands to commit, push your new code and start the pipeline:
+3. Fix the configuration file name Using Cloud9, by opening the file **app/app.js** and changing on the first line from **<PLEASE-FIX-ME\>** to **config**
+4. Still on Cloud9, select the **bash** tab and execute the following commands to commit and push your new code:
 ```
 git add app/app.js
 git commit -m "Fix configuration file name"
 git push
 ```
-5. Follow the pipeline execution on CodePipeline and wait for the Deploy to be concluded successfully
-6. Try again your application!
+5. The pipeline will be started and you can follow its execution on CodePipeline console. It should finishes succeffully!
+6. Try again the application!
 
 
 ## Clean up
-1. Open the CloudFormation console at https://console.aws.amazon.com/cloudformation
-2. Select **cicd-techtalk** Stack and click on **Delete** button
+1. Delete the CI/CD stack in the following order: CodePipeline, CodeDeploy, CodeBuild, CodeCommit and Cloud9
+2. Open the CloudFormation console at https://console.aws.amazon.com/cloudformation
+3. Select **cicd-techtalk** Stack and click on **Delete** button
 
 
 ## Reference links
