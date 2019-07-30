@@ -66,7 +66,8 @@ _Note: Please note that you'll be asked for the credentials created in the step 
 3. Enter the Project name as **'cicd-techtalk'**
 4. On Source define **AWS CodeCommit** as the source provider and select **cicd-techtalk** for repository
 5. On Environment choose **Ubuntu** for Operational System, **Standard** for Runtime and **aws/codebuild/standard:2.0** as the Image version. After, select **Existing service role** and search for **CodeBuild-cicd-techtalk**
-6. Click on **Create build project** button
+6. Uncheck the checkbox **Allow AWS CodeBuild to modify this service role so it can be used with this build project**
+7. Click on **Create build project** button
 
 
 ## CodeDeploy
@@ -122,7 +123,7 @@ git add app/app.js
 git commit -m "Fix configuration file name"
 git push
 ```
-5. The pipeline will be started and you can follow its execution on CodePipeline console. It should finishes succeffully!
+5. The pipeline will be started and you can follow its execution on CodePipeline console. It should finishes succesffully!
 6. Try again the application!
 
 

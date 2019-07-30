@@ -1,354 +1,365 @@
 Description: Template to create VPC and EC2 resources
-
 Parameters:
-
-  VPCName:       { Type: "String", Default: "VPC-2-AZs"     , Description: "VPC name. Default: VPC-2-AZs" }
-  CIDRVpc:       { Type: "String", Default: "10.100.0.0/16" , Description: "VPC CIDR"                  , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
-
-  CIDRPublicA:   { Type: "String", Default: "10.100.11.0/24", Description: "VPC CIDR Subnet Public-A"  , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
-  CIDRPrivateA:  { Type: "String", Default: "10.100.12.0/24", Description: "VPC CIDR Subnet Private-A" , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
-
-  CIDRPublicB:   { Type: "String", Default: "10.100.21.0/24", Description: "VPC CIDR Subnet Public-B"  , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
-  CIDRPrivateB:  { Type: "String", Default: "10.100.22.0/24", Description: "VPC CIDR Subnet Private-B" , AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
-
-  SSHLocation:   { Type: "String", Default: "0.0.0.0/0"  , Description: "SSH source. Default:0.0.0.0/0", AllowedPattern: "(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[/](\\d{1,2})", ConstraintDescription: "Must be a CIDR range a.b.c.d/x." }
-  SSHKp:         { Type: "String", Default: "cicd-keypair", Description: "KP to do SSH" }
-
+  VPCName:
+    Type: String
+    Default: VPC-2-AZs
+    Description: 'VPC name. Default: VPC-2-AZs'
+  CIDRVpc:
+    Type: String
+    Default: 10.100.0.0/16
+    Description: VPC CIDR
+    AllowedPattern: '(\d{1,3})[.](\d{1,3})[.](\d{1,3})[.](\d{1,3})[/](\d{1,2})'
+    ConstraintDescription: Must be a CIDR range a.b.c.d/x.
+  CIDRPublicA:
+    Type: String
+    Default: 10.100.11.0/24
+    Description: VPC CIDR Subnet Public-A
+    AllowedPattern: '(\d{1,3})[.](\d{1,3})[.](\d{1,3})[.](\d{1,3})[/](\d{1,2})'
+    ConstraintDescription: Must be a CIDR range a.b.c.d/x.
+  CIDRPrivateA:
+    Type: String
+    Default: 10.100.12.0/24
+    Description: VPC CIDR Subnet Private-A
+    AllowedPattern: '(\d{1,3})[.](\d{1,3})[.](\d{1,3})[.](\d{1,3})[/](\d{1,2})'
+    ConstraintDescription: Must be a CIDR range a.b.c.d/x.
+  CIDRPublicB:
+    Type: String
+    Default: 10.100.21.0/24
+    Description: VPC CIDR Subnet Public-B
+    AllowedPattern: '(\d{1,3})[.](\d{1,3})[.](\d{1,3})[.](\d{1,3})[/](\d{1,2})'
+    ConstraintDescription: Must be a CIDR range a.b.c.d/x.
+  CIDRPrivateB:
+    Type: String
+    Default: 10.100.22.0/24
+    Description: VPC CIDR Subnet Private-B
+    AllowedPattern: '(\d{1,3})[.](\d{1,3})[.](\d{1,3})[.](\d{1,3})[/](\d{1,2})'
+    ConstraintDescription: Must be a CIDR range a.b.c.d/x.
+  SSHLocation:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: 'SSH source. Default:0.0.0.0/0'
+    AllowedPattern: '(\d{1,3})[.](\d{1,3})[.](\d{1,3})[.](\d{1,3})[/](\d{1,2})'
+    ConstraintDescription: Must be a CIDR range a.b.c.d/x.
+  SSHKp:
+    Type: String
+    Default: cicd-keypair
+    Description: KP to do SSH
 Mappings:
-
-    "VPCRange": {
-      "VPC"       : { "CIDR": "10.100.0.0/16"  },
-
-      "PublicA"   : { "CIDR": "10.100.11.0/24" },
-      "PrivateA"  : { "CIDR": "10.100.12.0/24" },
-
-      "PublicB"   : { "CIDR": "10.100.21.0/24" },
-      "PrivateB"  : { "CIDR": "10.100.22.0/24" }
-    }
-
-    "RegionAndResource": {
-      "us-east-1"          : { "image": "ami-0b898040803850657" }
-    }
-
+  VPCRange:
+    VPC:
+      CIDR: 10.100.0.0/16
+    PublicA:
+      CIDR: 10.100.11.0/24
+    PrivateA:
+      CIDR: 10.100.12.0/24
+    PublicB:
+      CIDR: 10.100.21.0/24
+    PrivateB:
+      CIDR: 10.100.22.0/24
+  RegionAndResource:
+    us-east-1:
+      image: ami-0b898040803850657
 Resources:
-  
-  ###
-  ### VPC General
-  ###
-
-  # VPC
   VPC:
-    Type: AWS::EC2::VPC
+    Type: 'AWS::EC2::VPC'
     Properties:
       CidrBlock: !Ref CIDRVpc
       EnableDnsSupport: true
       EnableDnsHostnames: true
       Tags:
-        - { Key: Name , Value: !Ref VPCName }
-  
-  # IGW
+        - Key: Name
+          Value: !Ref VPCName
   IGW:
-    Type: AWS::EC2::InternetGateway
+    Type: 'AWS::EC2::InternetGateway'
     Properties:
       Tags:
-        - { Key: Name, Value: { "Fn::Join":["",[ "IGW-",{"Ref":"VPCName" } ]] } }
-        - { Key: VPC , Value: !Ref VPCName       }
-
-  # Attach IGW to VPC
+        - Key: Name
+          Value: !Join 
+            - ''
+            - - IGW-
+              - !Ref VPCName
+        - Key: VPC
+          Value: !Ref VPCName
   IGWAttach:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties: { VpcId: !Ref VPC, InternetGatewayId: !Ref IGW }
-
-  # Public Routing A
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref IGW
   RouteTablePubA:
-    Type: AWS::EC2::RouteTable
+    Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref VPC
       Tags:
-        - { Key: Name, Value: Route-Table-Public-A  }
-        - { Key: VPC , Value: !Ref VPCName        }
-
+        - Key: Name
+          Value: Route-Table-Public-A
+        - Key: VPC
+          Value: !Ref VPCName
   RouteIGWA:
-    Type: AWS::EC2::Route
+    Type: 'AWS::EC2::Route'
     DependsOn: IGW
     Properties:
       RouteTableId: !Ref RouteTablePubA
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref IGW
-
-  # Public Routing B
   RouteTablePubB:
-    Type: AWS::EC2::RouteTable
+    Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref VPC
       Tags:
-        - { Key: Name, Value: Route-Table-Public-B  }
-        - { Key: VPC , Value: !Ref VPCName        }
-
+        - Key: Name
+          Value: Route-Table-Public-B
+        - Key: VPC
+          Value: !Ref VPCName
   RouteIGWB:
-    Type: AWS::EC2::Route
+    Type: 'AWS::EC2::Route'
     DependsOn: IGW
     Properties:
       RouteTableId: !Ref RouteTablePubB
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref IGW
-
-  # Subnet: Public-A
   SubnetPubA:
-    Type: AWS::EC2::Subnet
+    Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref CIDRPublicA
-      AvailabilityZone: { "Fn::Select" : [ "0", { "Fn::GetAZs" : "" } ] }
-      MapPublicIpOnLaunch: True
+      AvailabilityZone: !Select 
+        - '0'
+        - !GetAZs ''
+      MapPublicIpOnLaunch: true
       Tags:
-        - { Key: Name, Value: PubSubnet-A  }
-        - { Key: VPC , Value: !Ref VPCName }
-
-  # Attach to: Route-Table-Public A
+        - Key: Name
+          Value: PubSubnet-A
+        - Key: VPC
+          Value: !Ref VPCName
   RouteTableAssociationPubA:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties: { SubnetId: !Ref SubnetPubA, RouteTableId: !Ref RouteTablePubA }
-
-  # Public IP for NATA
-  EIPNATA:
-    Type: AWS::EC2::EIP
-    Properties: 
-      Domain: vpc
-
-  # Attach NATA to Public-A
-  NATA:
-    Type: AWS::EC2::NatGateway
-    Properties: 
-      AllocationId: !GetAtt EIPNATA.AllocationId
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
       SubnetId: !Ref SubnetPubA
-      Tags: 
-        - { Key: Name, Value: Nat-Gateway-A }
-
-  # Subnet: Public-B
+      RouteTableId: !Ref RouteTablePubA
+  EIPNATA:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+  NATA:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      AllocationId: !GetAtt 
+        - EIPNATA
+        - AllocationId
+      SubnetId: !Ref SubnetPubA
+      Tags:
+        - Key: Name
+          Value: Nat-Gateway-A
   SubnetPubB:
-    Type: AWS::EC2::Subnet
+    Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref CIDRPublicB
-      AvailabilityZone: { "Fn::Select" : [ "1", { "Fn::GetAZs" : "" } ] }
-      MapPublicIpOnLaunch: True
+      AvailabilityZone: !Select 
+        - '1'
+        - !GetAZs ''
+      MapPublicIpOnLaunch: true
       Tags:
-        - { Key: Name, Value: PubSubnet-B  }
-        - { Key: VPC , Value: !Ref VPCName }
-
-  # Attach to: Route-Table-Public B
+        - Key: Name
+          Value: PubSubnet-B
+        - Key: VPC
+          Value: !Ref VPCName
   RouteTableAssociationPubB:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties: { SubnetId: !Ref SubnetPubB, RouteTableId: !Ref RouteTablePubB }
-
-  # Public IP for NATB
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref SubnetPubB
+      RouteTableId: !Ref RouteTablePubB
   EIPNATB:
-    Type: AWS::EC2::EIP
-    Properties: 
+    Type: 'AWS::EC2::EIP'
+    Properties:
       Domain: vpc
-
-  # Attach NATB to Public-B
   NATB:
-    Type: AWS::EC2::NatGateway
-    Properties: 
-      AllocationId: !GetAtt EIPNATB.AllocationId
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      AllocationId: !GetAtt 
+        - EIPNATB
+        - AllocationId
       SubnetId: !Ref SubnetPubB
       Tags:
-        - { Key: Name, Value: Nat-Gateway-B }
-
-  # Private Routing A
+        - Key: Name
+          Value: Nat-Gateway-B
   RouteTablePrivA:
-    Type: AWS::EC2::RouteTable
+    Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref VPC
       Tags:
-        - { Key: Name, Value: Route-Table-Priv-A }
-        - { Key: VPC , Value: !Ref VPCName       }
-
-  # Subnet: Private-A
+        - Key: Name
+          Value: Route-Table-Priv-A
+        - Key: VPC
+          Value: !Ref VPCName
   SubnetPrivA:
-    Type: AWS::EC2::Subnet
+    Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref CIDRPrivateA
-      AvailabilityZone: { "Fn::Select" : [ "0", { "Fn::GetAZs" : "" } ] }
+      AvailabilityZone: !Select 
+        - '0'
+        - !GetAZs ''
       Tags:
-        - { Key: Name, Value: PrivSubnet-A  }
-        - { Key: VPC , Value: !Ref VPCName }
-
-  # Attach to: Route-Table-Private A
+        - Key: Name
+          Value: PrivSubnet-A
+        - Key: VPC
+          Value: !Ref VPCName
   RouteTableAssociationPrivA:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties: { SubnetId: !Ref SubnetPrivA, RouteTableId: !Ref RouteTablePrivA }
-
-  # Internet Access A
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref SubnetPrivA
+      RouteTableId: !Ref RouteTablePrivA
   RouteNATA:
-    Type: AWS::EC2::Route
+    Type: 'AWS::EC2::Route'
     DependsOn: NATA
     Properties:
       RouteTableId: !Ref RouteTablePrivA
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NATA
-
-  # Private Routing B
   RouteTablePrivB:
-    Type: AWS::EC2::RouteTable
+    Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref VPC
       Tags:
-        - { Key: Name, Value: Route-Table-Priv-B }
-        - { Key: VPC , Value: !Ref VPCName       }
-
-  # Subnet: Private-B
+        - Key: Name
+          Value: Route-Table-Priv-B
+        - Key: VPC
+          Value: !Ref VPCName
   SubnetPrivB:
-    Type: AWS::EC2::Subnet
+    Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref CIDRPrivateB
-      AvailabilityZone: { "Fn::Select" : [ "1", { "Fn::GetAZs" : "" } ] }
+      AvailabilityZone: !Select 
+        - '1'
+        - !GetAZs ''
       Tags:
-        - { Key: Name, Value: PrivSubnet-B  }
-        - { Key: VPC , Value: !Ref VPCName }
-
-  # Attach to: Route-Table-Private B
+        - Key: Name
+          Value: PrivSubnet-B
+        - Key: VPC
+          Value: !Ref VPCName
   RouteTableAssociationPrivB:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties: { SubnetId: !Ref SubnetPrivB, RouteTableId: !Ref RouteTablePrivB }
-
-  # Internet Access B
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref SubnetPrivB
+      RouteTableId: !Ref RouteTablePrivB
   RouteNATB:
-    Type: AWS::EC2::Route
+    Type: 'AWS::EC2::Route'
     DependsOn: NATB
     Properties:
       RouteTableId: !Ref RouteTablePrivB
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NATB
-
-  ###
-  ### Instances
-  ###
-
-  # Security Group for SSH
   SecurityGroupSSH:
-    Type: AWS::EC2::SecurityGroup
+    Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupName: SSHSg
       GroupDescription: ssh
       SecurityGroupIngress:
-        -
-          IpProtocol: "tcp"
-          FromPort: "22"
-          ToPort: "22"
-          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
       VpcId: !Ref VPC
       Tags:
         - Key: Name
           Value: SSHSg
-
-  # Security Group for HTTP(S) ALB
   SecurityGroupHTTPALB:
-    Type: AWS::EC2::SecurityGroup
+    Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupName: HTTPSgALB
       GroupDescription: HTTP(S)
       SecurityGroupIngress:
-        -
-          IpProtocol: "tcp"
-          FromPort: "80"
-          ToPort: "80"
-          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
       VpcId: !Ref VPC
       Tags:
         - Key: Name
           Value: HTTPSgALB
-
-  # Security Group for HTTP(S)
   SecurityGroupHTTPEC2:
-    Type: AWS::EC2::SecurityGroup
+    Type: 'AWS::EC2::SecurityGroup'
     DependsOn:
       - SecurityGroupHTTPALB
     Properties:
       GroupName: HTTPSgEC2
       GroupDescription: HTTP(S)
       SecurityGroupIngress:
-        -
-          IpProtocol: "tcp"
-          FromPort: "80"
-          ToPort: "80"
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
           SourceSecurityGroupId: !Ref SecurityGroupHTTPALB
-        -
-          IpProtocol: "tcp"
-          FromPort: "443"
-          ToPort: "443"
+        - IpProtocol: tcp
+          FromPort: '443'
+          ToPort: '443'
           SourceSecurityGroupId: !Ref SecurityGroupHTTPALB
       VpcId: !Ref VPC
       Tags:
         - Key: Name
           Value: HTTPSgEC2
-
-  # EC2 CodeDeploy role
   EC2Role:
-    Type: AWS::IAM::Role
+    Type: 'AWS::IAM::Role'
     Properties:
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonRekognitionReadOnlyAccess
-        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - 'arn:aws:iam::aws:policy/AmazonRekognitionReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
       RoleName: EC2-cicd-techtalk
-      AssumeRolePolicyDocument: 
-        Version: "2012-10-17"
-        Statement: 
-          - 
-            Effect: "Allow"
-            Principal: 
-              Service: 
-                - "ec2.amazonaws.com"
-            Action: 
-              - "sts:AssumeRole"
-      Path: "/"
-
-  # Instance Profile
-  EC2InstanceProfile: 
-    Type: "AWS::IAM::InstanceProfile"
-    Properties: 
-      Path: "/"
-      Roles: 
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+  EC2InstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
         - !Ref EC2Role
-
-  # Instance-A
   EC2A:
     Type: 'AWS::EC2::Instance'
     DependsOn: EC2InstanceProfile
     Properties:
-      ImageId: !FindInMap [RegionAndResource, !Ref "AWS::Region", image]
+      ImageId: !FindInMap 
+        - RegionAndResource
+        - !Ref 'AWS::Region'
+        - image
       InstanceType: t2.micro
       IamInstanceProfile: !Ref EC2InstanceProfile
       SubnetId: !Ref SubnetPrivA
       SecurityGroupIds:
         - !Ref SecurityGroupHTTPEC2
         - !Ref SecurityGroupSSH
-      UserData: 
-        Fn::Base64: |
-          #!/bin/bash -xe
-          sudo yum update -y aws-cfn-bootstrap
-          # CodeDeploy Agent Install
-          sudo yum install -y ruby
-          sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
-          sudo chmod +x ./install
-          sudo ./install auto
-          # Node.JS Install
-          sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
-          sudo yum install -y nodejs npm
+      UserData: !Base64 >
+        #!/bin/bash -xe
+        sudo yum update -y aws-cfn-bootstrap
+        # CodeDeploy Agent Install
+        sudo yum install -y ruby
+        sudo wget
+        https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+        sudo chmod +x ./install
+        sudo ./install auto
+        # Node.JS Install
+        sudo yum install -y
+        https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
+        sudo yum install -y nodejs npm
       KeyName: !Ref SSHKp
       Tags:
         - Key: Name
           Value: cicd-techtalk
-  
-  # Instance-Bastion
   EC2Bastion:
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !FindInMap [RegionAndResource, !Ref "AWS::Region", image]
+      ImageId: !FindInMap 
+        - RegionAndResource
+        - !Ref 'AWS::Region'
+        - image
       InstanceType: t2.micro
       SubnetId: !Ref SubnetPubA
       SecurityGroupIds:
@@ -357,18 +368,15 @@ Resources:
       Tags:
         - Key: Name
           Value: BastionInstance
-  
   EIPBastion:
-    Type: AWS::EC2::EIP
-    DependsOn: 
+    Type: 'AWS::EC2::EIP'
+    DependsOn:
       - EC2Bastion
     Properties:
       Domain: !Ref VPC
       InstanceId: !Ref EC2Bastion
-
-  # Target Group
   TALB:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
     DependsOn:
       - EC2A
     Properties:
@@ -386,121 +394,105 @@ Resources:
           Value: 10
       Targets:
         - Id: !Ref EC2A
-
-  # Elastic Load Balancer
   ALB:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     DependsOn:
       - TALB
     Properties:
-      Subnets: 
+      Subnets:
         - !Ref SubnetPubA
         - !Ref SubnetPubB
       Name: cicd-techtalk-alb
       SecurityGroups:
         - !Ref SecurityGroupHTTPALB
-  
   ALBListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
     Properties:
-      DefaultActions: 
+      DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TALB
       LoadBalancerArn: !Ref ALB
       Port: 80
       Protocol: HTTP
-
-  # Parameter Store
   ConfParameter:
-    Type: AWS::SSM::Parameter
-    Properties: 
+    Type: 'AWS::SSM::Parameter'
+    Properties:
       Name: /cicd-techtalk/aws/region
       Type: String
       Value: us-east-1
-
-  # CodeBuild role
   CodeBuildRole:
-    Type: AWS::IAM::Role
+    Type: 'AWS::IAM::Role'
     Properties:
-      AssumeRolePolicyDocument: 
-        Version: "2012-10-17"
-        Statement: 
-          - 
-            Effect: "Allow"
-            Principal: 
-              Service: 
-                - "codebuild.amazonaws.com"
-            Action: 
-              - "sts:AssumeRole"
-      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
       RoleName: CodeBuild-cicd-techtalk
       Policies:
         - PolicyName: cicdCodeBuildAccess
           PolicyDocument:
-            Version: '2012-10-17'
+            Version: 2012-10-17
             Statement:
               - Action:
-                - 'logs:*'
-                - 'ec2:CreateNetworkInterface'
-                - 'ec2:DescribeNetworkInterfaces'
-                - 'ec2:DeleteNetworkInterface'
-                - 'ec2:DescribeSubnets'
-                - 'ec2:DescribeSecurityGroups'
-                - 'ec2:DescribeDhcpOptions'
-                - 'ec2:DescribeVpcs'
-                - 'ec2:CreateNetworkInterfacePermission'
-                - 's3:PutObject'
-                - 's3:GetObject'
-                - 's3:GetObjectVersion'
-                - 's3:GetBucketAcl'
-                - 's3:GetBucketLocation'
-                - 'codecommit:GitPull'
-                - 'ssm:GetParameters'
-                - 'ssm:GetParameter'
+                  - 'logs:*'
+                  - 'ec2:CreateNetworkInterface'
+                  - 'ec2:DescribeNetworkInterfaces'
+                  - 'ec2:DeleteNetworkInterface'
+                  - 'ec2:DescribeSubnets'
+                  - 'ec2:DescribeSecurityGroups'
+                  - 'ec2:DescribeDhcpOptions'
+                  - 'ec2:DescribeVpcs'
+                  - 'ec2:CreateNetworkInterfacePermission'
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                  - 's3:GetObjectVersion'
+                  - 's3:GetBucketAcl'
+                  - 's3:GetBucketLocation'
+                  - 'codecommit:GitPull'
+                  - 'ssm:GetParameters'
+                  - 'ssm:GetParameter'
                 Effect: Allow
                 Resource: '*'
-
-  # CodeDeploy role
   CodeDeployRole:
-    Type: AWS::IAM::Role
+    Type: 'AWS::IAM::Role'
     Properties:
-      AssumeRolePolicyDocument: 
-        Version: "2012-10-17"
-        Statement: 
-          - 
-            Effect: "Allow"
-            Principal: 
-              Service: 
-                - "codedeploy.amazonaws.com"
-            Action: 
-              - "sts:AssumeRole"
-      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codedeploy.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole
+        - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       RoleName: CodeDeploy-cicd-techtalk
-  
 Outputs:
-
   VPC:
-    Description: "VPC id"
+    Description: VPC id
     Value: !Ref VPC
-
   EIPBastion:
-    Description: "Public IP"
+    Description: Public IP
     Value: !Ref EIPBastion
-
   ELB:
-    Description: "ELB DNS"
-    Value: !GetAtt ALB.DNSName
-
+    Description: ELB DNS
+    Value: !GetAtt 
+      - ALB
+      - DNSName
   EC2Role:
-    Description: "Role used for EC2"
+    Description: Role used for EC2
     Value: !Ref EC2Role
-
   CodeBuildRole:
-    Description: "Role used for CodeBuild"
+    Description: Role used for CodeBuild
     Value: !Ref CodeBuildRole
-
   CodeDeployRole:
-    Description: "Role used for CodeDeploy"
+    Description: Role used for CodeDeploy
     Value: !Ref CodeDeployRole
