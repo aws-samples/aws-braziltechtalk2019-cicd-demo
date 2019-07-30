@@ -381,7 +381,7 @@ Resources:
       UnhealthyThresholdCount: 2
       HealthCheckTimeoutSeconds: 2
       HealthCheckIntervalSeconds: 5
-      TargetGroupAttribute:
+      TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 10
       Targets:
