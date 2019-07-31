@@ -341,13 +341,11 @@ Resources:
         sudo yum update -y aws-cfn-bootstrap
         # CodeDeploy Agent Install
         sudo yum install -y ruby
-        sudo wget
-        https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+        sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
         sudo chmod +x ./install
         sudo ./install auto
         # Node.JS Install
-        sudo yum install -y
-        https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
+        sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
         sudo yum install -y nodejs npm
       KeyName: !Ref SSHKp
       Tags:
